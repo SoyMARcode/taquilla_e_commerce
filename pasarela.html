@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pago · Taquilla</title>
+<link href="css/styles.css" rel="stylesheet">
+</head>
+<body data-page="pago" class="bg-ink font-sans text-fg antialiased">
+<main class="mx-auto flex min-h-screen w-full max-w-md flex-col px-6 pb-8 pt-14">
+  <header class="flex items-center gap-3.5">
+    <a href="carrito_compras.html" aria-label="Volver al carrito" class="flex h-11 w-11 flex-none items-center justify-center rounded-[14px] border border-line bg-surface text-fg transition hover:border-line2 hover:bg-surface2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand">
+      <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"></path></svg>
+    </a>
+    <h1 class="font-display text-2xl font-bold tracking-tight">Pago</h1>
+  </header>
+
+  <ol aria-label="Pasos de compra" class="mt-[18px] grid grid-cols-3 gap-1.5 text-xs">
+    <li class="flex flex-col gap-1.5 text-soft"><div class="h-1 rounded-sm bg-brand"></div><a href="carrito_compras.html" class="hover:text-fg">1 · Carrito</a></li>
+    <li class="flex flex-col gap-1.5 font-semibold text-fg" aria-current="step"><div class="h-1 rounded-sm bg-brand"></div>2 · Pago</li>
+    <li class="flex flex-col gap-1.5 text-dim"><div class="h-1 rounded-sm bg-line"></div>3 · Confirmación</li>
+  </ol>
+
+  <div class="mt-[18px] flex items-center justify-between rounded-2xl border border-surface2 bg-surface px-4 py-3.5">
+    <div class="flex flex-col gap-0.5">
+      <span id="resumen-detalle" class="text-[13px] text-muted">—</span>
+      <span id="resumen-total" class="font-display text-xl font-bold">$0</span>
+    </div>
+    <a href="carrito_compras.html" class="text-sm font-medium text-brand-light transition hover:text-brand-lighter">Ver detalle</a>
+  </div>
+
+  <form id="form-pago" novalidate class="flex flex-1 flex-col">
+    <h2 class="mt-5 text-sm font-semibold text-soft">Método de pago</h2>
+    <div class="mt-2.5 grid grid-cols-3 gap-2">
+      <button type="button" data-metodo="tarjeta" aria-pressed="true" class="flex h-16 flex-col items-center justify-center gap-0.5 rounded-[14px] border-2 border-brand bg-surface2"><span class="text-sm font-semibold">Tarjeta</span><span class="text-[11px] opacity-80">Crédito / débito</span></button>
+      <button type="button" data-metodo="pse" aria-pressed="false" class="flex h-16 flex-col items-center justify-center gap-0.5 rounded-[14px] border border-line bg-surface text-soft"><span class="text-sm font-semibold">PSE</span><span class="text-[11px] opacity-80">Débito bancario</span></button>
+      <button type="button" data-metodo="billetera" aria-pressed="false" class="flex h-16 flex-col items-center justify-center gap-0.5 rounded-[14px] border border-line bg-surface text-soft"><span class="text-sm font-semibold">Billetera</span><span class="text-[11px] opacity-80">Pago con celular</span></button>
+    </div>
+
+    <!-- Tarjeta -->
+    <div data-panel="tarjeta" class="mt-[18px] flex flex-col gap-3.5">
+      <div class="flex flex-col gap-1.5">
+        <label for="num" class="text-[13px] font-medium text-soft">Número de tarjeta</label>
+        <input id="num" type="text" inputmode="numeric" autocomplete="cc-number" placeholder="0000 0000 0000 0000" aria-describedby="num-error"
+          class="h-[50px] w-full rounded-[14px] border border-line bg-surface px-4 text-[15px] tracking-wider text-fg outline-none transition placeholder:text-placeholder focus:border-brand focus:ring-2 focus:ring-brand/25 aria-[invalid=true]:border-danger aria-[invalid=true]:ring-danger/20">
+        <p id="tarjeta-guardada" class="hidden text-xs text-muted"></p>
+        <p id="num-error" class="hidden text-xs text-danger"></p>
+      </div>
+      <div class="flex flex-col gap-1.5">
+        <label for="titular" class="text-[13px] font-medium text-soft">Nombre en la tarjeta</label>
+        <input id="titular" type="text" autocomplete="cc-name" placeholder="Como aparece en la tarjeta" aria-describedby="titular-error"
+          class="h-[50px] w-full rounded-[14px] border border-line bg-surface px-4 text-[15px] text-fg outline-none transition placeholder:text-placeholder focus:border-brand focus:ring-2 focus:ring-brand/25 aria-[invalid=true]:border-danger aria-[invalid=true]:ring-danger/20">
+        <p id="titular-error" class="hidden text-xs text-danger"></p>
+      </div>
+      <div class="grid grid-cols-3 gap-2.5">
+        <div class="flex flex-col gap-1.5">
+          <label for="venc" class="text-[13px] font-medium text-soft">Vence</label>
+          <input id="venc" type="text" inputmode="numeric" autocomplete="cc-exp" placeholder="MM/AA" aria-describedby="venc-error"
+            class="h-[50px] w-full rounded-[14px] border border-line bg-surface px-3.5 text-[15px] text-fg outline-none transition placeholder:text-placeholder focus:border-brand focus:ring-2 focus:ring-brand/25 aria-[invalid=true]:border-danger aria-[invalid=true]:ring-danger/20">
+          <p id="venc-error" class="hidden text-xs text-danger"></p>
+        </div>
+        <div class="flex flex-col gap-1.5">
+          <label for="cvv" class="text-[13px] font-medium text-soft">CVV</label>
+          <input id="cvv" type="password" inputmode="numeric" autocomplete="cc-csc" placeholder="•••" aria-describedby="cvv-error"
+            class="h-[50px] w-full rounded-[14px] border border-line bg-surface px-3.5 text-[15px] text-fg outline-none transition placeholder:text-placeholder focus:border-brand focus:ring-2 focus:ring-brand/25 aria-[invalid=true]:border-danger aria-[invalid=true]:ring-danger/20">
+          <p id="cvv-error" class="hidden text-xs text-danger"></p>
+        </div>
+        <div class="flex flex-col gap-1.5">
+          <label for="cuotas" class="text-[13px] font-medium text-soft">Cuotas</label>
+          <select id="cuotas" class="h-[50px] w-full rounded-[14px] border border-line bg-surface px-2.5 text-[15px] text-fg outline-none transition focus:border-brand focus:ring-2 focus:ring-brand/25">
+            <option>1</option><option>3</option><option>6</option><option>12</option>
+          </select>
+        </div>
+      </div>
+      <label class="flex cursor-pointer items-center gap-2.5 text-sm text-soft">
+        <input id="guardar-tarjeta" type="checkbox" checked class="h-[18px] w-[18px] accent-brand">
+        Guardar tarjeta para próximas compras
+      </label>
+    </div>
+
+    <!-- PSE -->
+    <div data-panel="pse" class="mt-[18px] flex hidden flex-col gap-3.5">
+      <div class="flex flex-col gap-1.5">
+        <label for="banco" class="text-[13px] font-medium text-soft">Banco</label>
+        <select id="banco" aria-describedby="banco-error" class="h-[50px] w-full rounded-[14px] border border-line bg-surface px-3.5 text-[15px] text-fg outline-none transition focus:border-brand focus:ring-2 focus:ring-brand/25 aria-[invalid=true]:border-danger">
+          <option value="">Selecciona tu banco</option>
+          <option>Bancolombia</option><option>Davivienda</option><option>Banco de Bogotá</option><option>BBVA</option><option>Banco de Occidente</option>
+        </select>
+        <p id="banco-error" class="hidden text-xs text-danger"></p>
+      </div>
+      <div class="flex flex-col gap-1.5">
+        <label for="pse-correo" class="text-[13px] font-medium text-soft">Correo registrado en PSE</label>
+        <input id="pse-correo" type="email" autocomplete="email" placeholder="tu@correo.com" aria-describedby="pse-correo-error"
+          class="h-[50px] w-full rounded-[14px] border border-line bg-surface px-4 text-[15px] text-fg outline-none transition placeholder:text-placeholder focus:border-brand focus:ring-2 focus:ring-brand/25 aria-[invalid=true]:border-danger aria-[invalid=true]:ring-danger/20">
+        <p id="pse-correo-error" class="hidden text-xs text-danger"></p>
+      </div>
+      <p class="text-xs leading-relaxed text-muted">Al pagar te redirigiremos a la página de tu banco para autorizar el débito.</p>
+    </div>
+
+    <!-- Billetera -->
+    <div data-panel="billetera" class="mt-[18px] flex hidden flex-col gap-3.5">
+      <div class="flex flex-col gap-1.5">
+        <label for="billetera-app" class="text-[13px] font-medium text-soft">Billetera</label>
+        <select id="billetera-app" aria-describedby="billetera-app-error" class="h-[50px] w-full rounded-[14px] border border-line bg-surface px-3.5 text-[15px] text-fg outline-none transition focus:border-brand focus:ring-2 focus:ring-brand/25 aria-[invalid=true]:border-danger">
+          <option value="">Selecciona una billetera</option>
+          <option>Nequi</option><option>Daviplata</option>
+        </select>
+        <p id="billetera-app-error" class="hidden text-xs text-danger"></p>
+      </div>
+      <div class="flex flex-col gap-1.5">
+        <label for="billetera-tel" class="text-[13px] font-medium text-soft">Celular asociado</label>
+        <input id="billetera-tel" type="tel" inputmode="numeric" autocomplete="tel" placeholder="3000000000" aria-describedby="billetera-tel-error"
+          class="h-[50px] w-full rounded-[14px] border border-line bg-surface px-4 text-[15px] text-fg outline-none transition placeholder:text-placeholder focus:border-brand focus:ring-2 focus:ring-brand/25 aria-[invalid=true]:border-danger aria-[invalid=true]:ring-danger/20">
+        <p id="billetera-tel-error" class="hidden text-xs text-danger"></p>
+      </div>
+      <p class="text-xs leading-relaxed text-muted">Recibirás una notificación en tu celular para aprobar el pago.</p>
+    </div>
+
+    <div class="mt-auto flex flex-col gap-3 pt-6">
+      <div class="flex items-center justify-center gap-1.5 text-xs text-muted">
+        <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="10" rx="2"></rect><path d="M8 11V8a4 4 0 0 1 8 0v3"></path></svg>
+        Pago seguro y cifrado
+      </div>
+      <button type="submit" id="pagar" class="h-[58px] rounded-2xl bg-brand font-display text-[17px] font-semibold text-brand-ink transition hover:bg-brand-light active:scale-[.99] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:ring-offset-ink disabled:cursor-wait disabled:opacity-70">Pagar</button>
+    </div>
+  </form>
+</main>
+<script src="js/app.js"></script>
+</body>
+</html>
